@@ -3,6 +3,7 @@ import Dashboard from "./components/Dashboard";
 import Layout from "./components/shared/Layout";
 import Product from "./components/Product";
 import Pembelian from "./components/Pembelian";
+import Login from "./components/Login";
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
           <Route path="pembelian" element={<Pembelian />} />
         </Route>
 
-        <Route path="login" element={<div>This is login page</div>} />
+        <Route path="login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
