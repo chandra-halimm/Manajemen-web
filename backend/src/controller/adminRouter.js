@@ -1,19 +1,39 @@
 const Admin = require("../models/adminModels");
+const {
+  handle200,
+  handle201,
+  handle400,
+  handle500,
+} = require("../middleware/response");
 
 const getAdmin = async (req, res) => {
-  const getDataAdmin = await Admin.findAll();
+  const data = await Admin.findAll();
 
   try {
-    const success = getDataAdmin
-      ? res.status(200).json({ data: getDataAdmin })
-      : getDataAdmin === null
-      ? res.sendStatus(400)
-      : res.status(500).json({ message: "Internal server error" });
+    const isData = data
+      ? handle200(req, res, data, "all")
+      : handle400(req, res, "invalid paramaters");
 
-    return success;
+    return isData;
   } catch (error) {
-    console.error("An error occurred:", error);
+    handle500(req, res, error);
   }
 };
 
-module.exports = { getAdmin };
+const createAdmin = async (req, res) => {
+  try {
+    const { name, email, password, confPassword } = req.body;
+    const data = await Admin.create({ name, email, password, confPassword });
+
+    const checkPassword =
+      password !== confPassword
+        ? handle400(req, res, "password not match")
+        : handle201(req, res, data, "admin");
+
+    return checkPassword;
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
+module.exports = { getAdmin, createAdmin };
