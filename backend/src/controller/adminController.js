@@ -25,12 +25,6 @@ const createAdmin = async (req, res) => {
   try {
     const { name, email, password, confPassword } = req.body;
     const encryptedPassword = await bcrypt.hash(password, 10);
-    const data = await Admin.create({
-      name,
-      email,
-      password: encryptedPassword,
-      confPassword,
-    });
 
     const existingUser = await Admin.findOne({
       where: {
@@ -38,11 +32,19 @@ const createAdmin = async (req, res) => {
       },
     });
 
-    const isData = existingUser
-      ? handle400(req, res, "email has been register")
-      : password !== confPassword
-      ? handle400(req, res, "password not match")
-      : handle201(req, res, data, "admin");
+    if (existingUser) return handle400(req, res, "email has been reggistered");
+
+    const data = await Admin.create({
+      name,
+      email,
+      password: encryptedPassword,
+      confPassword,
+    });
+
+    const isData =
+      password !== confPassword
+        ? handle400(req, res, "password not match")
+        : handle201(req, res, data, "admin");
 
     return isData;
   } catch (error) {
