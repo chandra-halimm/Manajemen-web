@@ -1,10 +1,11 @@
+const bcrypt = require("bcrypt");
 const Admin = require("../models/adminModels");
 const {
   handle200,
   handle201,
   handle400,
   handle500,
-} = require("../middleware/response");
+} = require("../utils/response");
 
 const getAdmin = async (req, res) => {
   const data = await Admin.findAll();
@@ -23,14 +24,27 @@ const getAdmin = async (req, res) => {
 const createAdmin = async (req, res) => {
   try {
     const { name, email, password, confPassword } = req.body;
-    const data = await Admin.create({ name, email, password, confPassword });
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    const data = await Admin.create({
+      name,
+      email,
+      password: encryptedPassword,
+      confPassword,
+    });
 
-    const checkPassword =
-      password !== confPassword
-        ? handle400(req, res, "password not match")
-        : handle201(req, res, data, "admin");
+    const existingUser = await Admin.findOne({
+      where: {
+        email: email,
+      },
+    });
 
-    return checkPassword;
+    const isData = existingUser
+      ? handle400(req, res, "email has been register")
+      : password !== confPassword
+      ? handle400(req, res, "password not match")
+      : handle201(req, res, data, "admin");
+
+    return isData;
   } catch (error) {
     handle500(req, res, error);
   }
