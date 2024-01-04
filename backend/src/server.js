@@ -2,8 +2,14 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 8000;
 const cors = require("cors");
+const { accessValidation } = require("./middleware/authorization");
+require("dotenv").config();
+
+//Routing
 const adminRoute = require("./routes/AdminRoute");
 const authRoute = require("./routes/authRoute");
+
+// migrate DB
 // const db = require("./config/config");
 // db.sync();
 
@@ -17,7 +23,7 @@ try {
   console.error(error);
 }
 
-app.get("/", (req, res) => {
+app.get("/", accessValidation, (req, res) => {
   res.send("Hello, world!");
 });
 

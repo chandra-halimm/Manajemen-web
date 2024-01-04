@@ -28,6 +28,14 @@ const handle400 = (req, res, message) => {
   });
 };
 
+const handle401 = (req, res, message) => {
+  res.status(401).json({
+    error: {
+      message: message || "Unauthorized",
+    },
+  });
+};
+
 const handle500 = (req, res, message) => {
   res.status(500).json({
     error: {
@@ -37,4 +45,4 @@ const handle500 = (req, res, message) => {
   console.error(message);
 };
 
-module.exports = { handle200, handle201, handle400, handle500 };
+module.exports = { handle200, handle201, handle400, handle401, handle500 };

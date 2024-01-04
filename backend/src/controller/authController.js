@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const passwordCheck = require("../utils/passwordCheck");
-const Admin = require("../models/adminModels");
+const blacklist = require("../middleware/blacklist");
 const {
   handle200,
   handle201,
@@ -10,11 +10,23 @@ const {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { adminId, email, password } = req.body;
     const check = await passwordCheck(email, password);
 
+    const secretKey = process.env.SECRET_PASSWORD;
+
+    const payload = {
+      adminId: adminId,
+      email: email,
+      password: password,
+    };
+
+    const token = jwt.sign(payload, secretKey, {
+      expiresIn: "3d",
+    });
+
     const isData = check.compare
-      ? handle201(req, res, "login success", "login")
+      ? handle201(req, res, token, "login")
       : handle400(req, res, "login fail");
 
     return isData;
@@ -23,4 +35,25 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+const logout = (req, res) => {
+  const { authorization } = req.headers;
+
+  if (!authorization) {
+    return handle400(req, res, "Token missing");
+  }
+
+  const token = authorization.split(" ")[1];
+  const secretKey = process.env.SECRET_PASSWORD;
+
+  try {
+    const decodedToken = jwt.verify(token, secretKey);
+
+    blacklist.addToken(token);
+
+    return handle200(req, res, decodedToken, "Logout successful");
+  } catch (error) {
+    return handle400(req, res, "Invalid token");
+  }
+};
+
+module.exports = { login, logout };
