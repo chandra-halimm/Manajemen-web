@@ -70,7 +70,7 @@ export default function Header() {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      onClick={() => window.location.replace("/pembelian")}
+                      // onClick={() => window.location.replace("/pembelian")}
                       className={`${
                         active ? " text-sky-500" : "text-gray-900"
                       } group flex w-full items-center rounded-sm px-2 py-2 text-sm`}

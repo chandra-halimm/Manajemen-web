@@ -5,9 +5,9 @@ export const DASHBOARD_SIDEBAR_LINK = [
     path: "/",
   },
   {
-    key: "product",
-    label: "Product",
-    path: "/product",
+    key: "supplier",
+    label: "Supplier",
+    path: "/supplier",
   },
   {
     key: "pembelian",

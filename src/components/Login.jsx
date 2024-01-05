@@ -35,8 +35,8 @@ export default function Login() {
       const token = response.data.data;
 
       if (token) {
-        setAuth({ user, password, token });
-        alert("success login");
+        setAuth({ email: user, password: password, token: token });
+        alert("login success");
         navigate("/");
       }
     } catch (err) {
