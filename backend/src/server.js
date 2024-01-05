@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 8000;
 const cors = require("cors");
-const { accessValidation } = require("./middleware/authorization");
 require("dotenv").config();
 
 //Routing
@@ -23,7 +22,7 @@ try {
   console.error(error);
 }
 
-app.get("/", accessValidation, (req, res) => {
+app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 

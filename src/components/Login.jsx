@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useContext } from "react";
 import AuthContext from "./context/AuthProvider";
-import axios from "./api/axios";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LOGIN_URL = "/login";
 
@@ -8,11 +9,11 @@ export default function Login() {
   const { setAuth } = useContext(AuthContext);
   const userRef = useRef();
   const errRef = useRef();
+  const navigate = useNavigate();
 
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     userRef.current.focus();
@@ -24,16 +25,41 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(user, password);
-    setSuccess(true);
-    setPassword("");
-    setUser("");
+
+    try {
+      const response = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ email: user, password: password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      console.log(JSON.stringify(response?.data));
+      const token = response?.data?.token;
+
+      if (token) {
+        setAuth({ user, password, token });
+        navigate("/");
+      }
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No server response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Username or password incorrect");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+      errRef.current.focus();
+    }
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="bg-white w-[30%]  shadow-sm border-2 border-gray-200 flex flex-col p-4 drop-shadow-md">
-        {success ? window.location.replace("/") : null}
         <section>
           <p
             ref={errRef}
