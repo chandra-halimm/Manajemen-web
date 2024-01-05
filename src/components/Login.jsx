@@ -3,7 +3,7 @@ import AuthContext from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const LOGIN_URL = "/login";
+const LOGIN_URL = "http://localhost:8000/login";
 
 export default function Login() {
   const { setAuth } = useContext(AuthContext);
@@ -27,25 +27,22 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        LOGIN_URL,
-        JSON.stringify({ email: user, password: password }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(LOGIN_URL, {
+        email: user,
+        password: password,
+      });
 
-      console.log(JSON.stringify(response?.data));
-      const token = response?.data?.token;
+      const token = response.data.data;
 
       if (token) {
         setAuth({ user, password, token });
+        alert("success login");
         navigate("/");
       }
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No server response");
+        console.log(err);
       } else if (err.response?.status === 400) {
         setErrMsg("Username or password incorrect");
       } else if (err.response?.status === 401) {
@@ -76,7 +73,7 @@ export default function Login() {
           <input
             className="mb-4 p-3 border-2 rounded-md focus:border-sky-500 focus:outline-none active:border-sky-500 active:outline-none"
             type="text"
-            placeholder="Username"
+            placeholder="email"
             ref={userRef}
             autoComplete="off"
             onChange={(e) => setUser(e.target.value)}
