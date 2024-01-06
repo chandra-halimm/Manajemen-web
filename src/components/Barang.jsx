@@ -3,8 +3,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import {
   HiOutlinePencil,
   HiOutlineTrash,
-  HiOutlinePlus,
   HiOutlinePrinter,
+  HiOutlineFolderRemove,
 } from "react-icons/hi";
 
 const TableHeader = () => (
@@ -14,16 +14,13 @@ const TableHeader = () => (
         No.
       </th>
       <th scope="col" className="px-6 py-4">
-        Nama Barang
+        Kode Barang
       </th>
       <th scope="col" className="px-6 py-4">
         Nama Barang
       </th>
       <th scope="col" className="px-6 py-4">
-        Email
-      </th>
-      <th scope="col" className="px-6 py-4">
-        Handphone
+        Harga
       </th>
       <th scope="col" className="px-6 py-4">
         Action
@@ -32,7 +29,7 @@ const TableHeader = () => (
   </thead>
 );
 
-const TableRow = ({ number, nama, alamat, email, handphone, handle }) => {
+const TableRow = ({ number, kodeBarang, namaBarang, harga, handle }) => {
   const isEvenRow = number % 2 === 0;
 
   return (
@@ -42,11 +39,10 @@ const TableRow = ({ number, nama, alamat, email, handphone, handle }) => {
       }`}
     >
       <td className="whitespace-nowrap px-6 py-4 font-medium">{number}</td>
-      <td className="whitespace-nowrap px-6 py-4">{nama}</td>
-      <td className="whitespace-nowrap px-6 py-4">{alamat}</td>
-      <td className="whitespace-nowrap px-6 py-4">{email}</td>
-      <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
-      <td className="whitespace-nowrap  py-4">{handle}</td>
+      <td className="whitespace-nowrap px-6 py-4">{kodeBarang}</td>
+      <td className="whitespace-nowrap px-6 py-4">{namaBarang}</td>
+      <td className="whitespace-nowrap px-6 py-4">{harga}</td>
+      <td className="whitespace-nowrap px-6 py-4">{handle}</td>
     </tr>
   );
 };
@@ -63,14 +59,14 @@ const button = (
 );
 
 const Pembelian = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [openinventory, setOpenInventory] = useState(false);
 
-  function closeModal() {
-    setIsOpen(false);
+  function closeModalInventory() {
+    setOpenInventory(false);
   }
 
-  function openModal() {
-    setIsOpen(true);
+  function openModalInventory() {
+    setOpenInventory(true);
   }
 
   return (
@@ -80,19 +76,22 @@ const Pembelian = () => {
           <div className="overflow-hidden">
             <div className="flex gap-2">
               <button
-                onClick={openModal}
+                onClick={openModalInventory}
                 className="px-6 py-2 bg-sky-500 rounded-md text-white mb-3 hover:bg-sky-700 duration-300"
               >
-                <HiOutlinePlus fontSize={20} />
+                <HiOutlineFolderRemove fontSize={20} />
               </button>
               <button className="px-6 py-2 bg-sky-500 rounded-md text-white mb-3 hover:bg-sky-700 duration-300">
                 <HiOutlinePrinter fontSize={20} />
               </button>
             </div>
 
-            {/* pembelian */}
-            <Transition appear show={isOpen} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition appear show={openinventory} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={closeModalInventory}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -121,37 +120,30 @@ const Pembelian = () => {
                           as="h3"
                           className="text-lg font-medium leading-6 text-gray-900"
                         >
-                          INPUT SUPLIER
+                          INPUT BARANG
                         </Dialog.Title>
                         <div className="mt-4">
                           <form className="flex flex-col gap-2">
-                            <label htmlFor="nama">Nama Supplier</label>
+                            <label htmlFor="nama">Kode Barang</label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="text"
-                              placeholder="input nama supplier"
+                              placeholder="input nama Barang"
                               id="nama"
                             />
-                            <label htmlFor="alamat">Alamat </label>
+                            <label htmlFor="nama">Nama Barang</label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="text"
-                              placeholder="input alamat"
-                              id="alamat"
+                              placeholder="input nama Barang"
+                              id="nama"
                             />
-                            <label htmlFor="email">Email </label>
+                            <label htmlFor="nama">Harga</label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
-                              type="email"
-                              placeholder="input alamat"
-                              id="email"
-                            />
-                            <label htmlFor="number">Handphone </label>
-                            <input
-                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
-                              type="number"
-                              placeholder="input alamat"
-                              id="number"
+                              type="text"
+                              placeholder="input nama Barang"
+                              id="nama"
                             />
                           </form>
                         </div>
@@ -160,7 +152,7 @@ const Pembelian = () => {
                           <button
                             type="button"
                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={closeModal}
+                            onClick={closeModalInventory}
                           >
                             Submit
                           </button>
@@ -177,18 +169,16 @@ const Pembelian = () => {
               <tbody>
                 <TableRow
                   number={1}
-                  nama="Larry"
-                  alamat="Kota Baru"
-                  email="admin@gmail.com"
-                  handphone="123122312"
+                  kodeBarang="By12311"
+                  namaBarang="Platinum"
+                  harga="12311"
                   handle={button}
                 />
                 <TableRow
                   number={2}
-                  nama="Larry"
-                  alamat="Kota Baru"
-                  email="admin@gmail.com"
-                  handphone="123122312"
+                  kodeBarang="By12311"
+                  namaBarang="Platinum"
+                  harga="12311"
                   handle={button}
                 />
               </tbody>

@@ -14,10 +14,13 @@ const TableHeader = () => (
         No.
       </th>
       <th scope="col" className="px-6 py-4">
-        Nama Barang
+        Nama Karyawan
       </th>
       <th scope="col" className="px-6 py-4">
-        Nama Barang
+        Jabatan
+      </th>
+      <th scope="col" className="px-6 py-4">
+        Alamat
       </th>
       <th scope="col" className="px-6 py-4">
         Email
@@ -32,7 +35,15 @@ const TableHeader = () => (
   </thead>
 );
 
-const TableRow = ({ number, nama, alamat, email, handphone, handle }) => {
+const TableRow = ({
+  number,
+  nama,
+  jabatan,
+  alamat,
+  email,
+  handphone,
+  handle,
+}) => {
   const isEvenRow = number % 2 === 0;
 
   return (
@@ -43,6 +54,7 @@ const TableRow = ({ number, nama, alamat, email, handphone, handle }) => {
     >
       <td className="whitespace-nowrap px-6 py-4 font-medium">{number}</td>
       <td className="whitespace-nowrap px-6 py-4">{nama}</td>
+      <td className="whitespace-nowrap px-6 py-4">{jabatan}</td>
       <td className="whitespace-nowrap px-6 py-4">{alamat}</td>
       <td className="whitespace-nowrap px-6 py-4">{email}</td>
       <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
@@ -62,7 +74,7 @@ const button = (
   </div>
 );
 
-const Pembelian = () => {
+const Karyawan = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -178,15 +190,17 @@ const Pembelian = () => {
                 <TableRow
                   number={1}
                   nama="Larry"
-                  alamat="Kota Baru"
+                  jabatan="staff"
+                  alamat="sipin"
                   email="admin@gmail.com"
-                  handphone="123122312"
+                  handphone="123123"
                   handle={button}
                 />
                 <TableRow
                   number={2}
                   nama="Larry"
-                  alamat="Kota Baru"
+                  jabatan="staff"
+                  alamat="sipin"
                   email="admin@gmail.com"
                   handphone="123122312"
                   handle={button}
@@ -200,4 +214,4 @@ const Pembelian = () => {
   );
 };
 
-export default Pembelian;
+export default Karyawan;

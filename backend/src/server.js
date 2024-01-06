@@ -7,6 +7,7 @@ require("dotenv").config();
 //Routing
 const adminRoute = require("./routes/AdminRoute");
 const authRoute = require("./routes/authRoute");
+const karyawanRoute = require("./routes/karyawanRoute");
 
 // migrate DB
 // const db = require("./config/config");
@@ -18,6 +19,7 @@ app.use(express.json());
 try {
   app.use(adminRoute);
   app.use(authRoute);
+  app.use(karyawanRoute);
 } catch (error) {
   console.error(error);
 }

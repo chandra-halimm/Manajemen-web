@@ -5,6 +5,16 @@ export const DASHBOARD_SIDEBAR_LINK = [
     path: "/",
   },
   {
+    key: "karyawan",
+    label: "Karyawan",
+    path: "/karyawan",
+  },
+  {
+    key: "barang",
+    label: "Barang",
+    path: "/barang",
+  },
+  {
     key: "supplier",
     label: "Supplier",
     path: "/supplier",
