@@ -8,6 +8,7 @@ const LOGIN_URL = "http://localhost:8000/login";
 export default function Login() {
   const { setAuth } = useContext(AuthContext);
   const userRef = useRef();
+  const passwordRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
 
@@ -84,7 +85,7 @@ export default function Login() {
             className="mb-4 p-3 border-2 rounded-md focus:border-sky-500 focus:outline-none active:border-sky-500 active:outline-none"
             type="password"
             placeholder="Password"
-            ref={userRef}
+            ref={passwordRef}
             autoComplete="off"
             onChange={(e) => setPassword(e.target.value)}
             value={password}

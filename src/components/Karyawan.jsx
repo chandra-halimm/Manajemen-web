@@ -1,5 +1,6 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import axios from "axios";
 import {
   HiOutlinePencil,
   HiOutlineTrash,
@@ -13,11 +14,14 @@ const TableHeader = () => (
       <th scope="col" className="px-6 py-4">
         No.
       </th>
-      <th scope="col" className="px-6 py-4">
-        Nama Karyawan
+      <th scope="col" className="px-6 py-4" hidden>
+        Karyawan ID
       </th>
       <th scope="col" className="px-6 py-4">
-        Jabatan
+        NIP
+      </th>
+      <th scope="col" className="px-6 py-4">
+        Nama
       </th>
       <th scope="col" className="px-6 py-4">
         Alamat
@@ -35,31 +39,41 @@ const TableHeader = () => (
   </thead>
 );
 
-const TableRow = ({
-  number,
-  nama,
-  jabatan,
-  alamat,
-  email,
-  handphone,
-  handle,
-}) => {
-  const isEvenRow = number % 2 === 0;
+const TableRow = () => {
+  const [karyawanList, setKaryawanList] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "http://localhost:8000/karyawan",
+    }).then((result) => setKaryawanList(result.data.data));
+  }, []);
 
   return (
-    <tr
-      className={`border-b dark:border-neutral-500 ${
-        isEvenRow ? "bg-gray-100" : "bg-white"
-      }`}
-    >
-      <td className="whitespace-nowrap px-6 py-4 font-medium">{number}</td>
-      <td className="whitespace-nowrap px-6 py-4">{nama}</td>
-      <td className="whitespace-nowrap px-6 py-4">{jabatan}</td>
-      <td className="whitespace-nowrap px-6 py-4">{alamat}</td>
-      <td className="whitespace-nowrap px-6 py-4">{email}</td>
-      <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
-      <td className="whitespace-nowrap  py-4">{handle}</td>
-    </tr>
+    <>
+      {karyawanList.map((karyawan, i) => {
+        const { karyawanId, nip, name, address, email, handphone } = karyawan;
+        return (
+          <tr
+            key={i}
+            className={`border-b dark:border-neutral-500 ${
+              i % 2 === 0 ? "bg-gray-100" : "bg-white"
+            }`}
+          >
+            <td className="whitespace-nowrap px-6 py-4 font-medium">{i + 1}</td>
+            <td className="whitespace-nowrap px-6 py-4" hidden>
+              {karyawanId}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4">{nip}</td>
+            <td className="whitespace-nowrap px-6 py-4">{name}</td>
+            <td className="whitespace-nowrap px-6 py-4">{address}</td>
+            <td className="whitespace-nowrap px-6 py-4">{email}</td>
+            <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
+            <td className="whitespace-nowrap py-4">{button}</td>
+          </tr>
+        );
+      })}
+    </>
   );
 };
 
@@ -84,6 +98,45 @@ const Karyawan = () => {
   function openModal() {
     setIsOpen(true);
   }
+
+  const [positionList, setPositionList] = useState([]);
+  const [nip, setNip] = useState("");
+  const [name, setName] = useState("");
+  const [alamat, setAlamat] = useState("");
+  const [email, setEmail] = useState("");
+  const [handphone, setHandphone] = useState("");
+  const [position, setPosition] = useState("");
+
+  const handleSubmit = () => {
+    const requestingData = {
+      nip: nip,
+      name: name,
+      address: alamat,
+      email: email,
+      handphone: handphone,
+      positionId: position,
+    };
+
+    const data = axios({
+      method: "POST",
+      url: "http://localhost:8000/karyawan",
+      data: requestingData,
+    }).then(() => {
+      alert("success adding karyawan data");
+      closeModal();
+      window.location.reload();
+    });
+    if (!data) {
+      alert("fail add karyawan data");
+    }
+  };
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "http://localhost:8000/position",
+    }).then((result) => setPositionList(result.data.data));
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -133,38 +186,81 @@ const Karyawan = () => {
                           as="h3"
                           className="text-lg font-medium leading-6 text-gray-900"
                         >
-                          INPUT SUPLIER
+                          INPUT KARYAWAN
                         </Dialog.Title>
                         <div className="mt-4">
                           <form className="flex flex-col gap-2">
-                            <label htmlFor="nama">Nama Supplier</label>
+                            <label htmlFor="nip" value={""}>
+                              NIP
+                            </label>
+                            <input
+                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                              type="number"
+                              placeholder="input nip"
+                              onChange={(e) => setNip(e.target.value)}
+                              id="nip"
+                              required
+                            />
+                            <label htmlFor="nama">Nama Karyawan </label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="text"
-                              placeholder="input nama supplier"
+                              placeholder="input nama karyawan"
+                              onChange={(e) => setName(e.target.value)}
                               id="nama"
+                              required
                             />
                             <label htmlFor="alamat">Alamat </label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="text"
                               placeholder="input alamat"
+                              onChange={(e) => setAlamat(e.target.value)}
                               id="alamat"
+                              required
                             />
                             <label htmlFor="email">Email </label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="email"
-                              placeholder="input alamat"
+                              placeholder="input Email"
+                              onChange={(e) => setEmail(e.target.value)}
                               id="email"
+                              required
                             />
-                            <label htmlFor="number">Handphone </label>
+                            <label htmlFor="handphonne">Handphone </label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="number"
-                              placeholder="input alamat"
-                              id="number"
+                              placeholder="input handphonne"
+                              onChange={(e) => setHandphone(e.target.value)}
+                              id="handphonne"
+                              required
                             />
+
+                            <label htmlFor="position">Jabatan </label>
+                            <select
+                              id="position"
+                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                              onChange={(e) => setPosition(e.target.value)}
+                              defaultValue=""
+                            >
+                              <option value="" disabled>
+                                Pilih Posisi
+                              </option>
+                              {positionList.map((jabatan, i) => {
+                                const { positionId, position } = jabatan;
+                                return (
+                                  <option
+                                    key={i}
+                                    value={positionId}
+                                    className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                                  >
+                                    {position}
+                                  </option>
+                                );
+                              })}
+                            </select>
                           </form>
                         </div>
 
@@ -172,7 +268,9 @@ const Karyawan = () => {
                           <button
                             type="button"
                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={closeModal}
+                            onClick={() => {
+                              handleSubmit();
+                            }}
                           >
                             Submit
                           </button>
@@ -187,24 +285,7 @@ const Karyawan = () => {
             <table className="min-w-full text-left text-sm font-light bg-white">
               <TableHeader />
               <tbody>
-                <TableRow
-                  number={1}
-                  nama="Larry"
-                  jabatan="staff"
-                  alamat="sipin"
-                  email="admin@gmail.com"
-                  handphone="123123"
-                  handle={button}
-                />
-                <TableRow
-                  number={2}
-                  nama="Larry"
-                  jabatan="staff"
-                  alamat="sipin"
-                  email="admin@gmail.com"
-                  handphone="123122312"
-                  handle={button}
-                />
+                <TableRow />
               </tbody>
             </table>
           </div>

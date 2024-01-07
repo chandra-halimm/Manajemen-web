@@ -11,7 +11,7 @@ const position = db.define("position", {
     defaultValue: Sequelize.UUIDV4,
   },
   position: {
-    type: DataTypes.UUID,
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });

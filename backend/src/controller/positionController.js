@@ -1,4 +1,4 @@
-const PositionModel = require("../models/position");
+const PositionModel = require("../models/positionModel");
 const {
   handle200,
   handle201,
