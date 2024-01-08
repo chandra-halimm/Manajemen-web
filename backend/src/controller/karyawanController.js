@@ -22,7 +22,7 @@ const getKaryawan = async (req, res) => {
 
 const createKaryawan = async (req, res) => {
   try {
-    const { nip, name, address, email, handphone, positionId } = req.body;
+    const { nip, name, address, email, handphone, position } = req.body;
 
     const data = await Karyawan.create({
       nip,
@@ -30,7 +30,7 @@ const createKaryawan = async (req, res) => {
       address,
       email,
       handphone,
-      positionId,
+      position,
     });
 
     const isData = data

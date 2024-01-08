@@ -33,6 +33,9 @@ const TableHeader = () => (
         Handphone
       </th>
       <th scope="col" className="px-6 py-4">
+        Jabatan
+      </th>
+      <th scope="col" className="px-6 py-4">
         Action
       </th>
     </tr>
@@ -52,7 +55,8 @@ const TableRow = () => {
   return (
     <>
       {karyawanList.map((karyawan, i) => {
-        const { karyawanId, nip, name, address, email, handphone } = karyawan;
+        const { karyawanId, nip, name, address, email, handphone, position } =
+          karyawan;
         return (
           <tr
             key={i}
@@ -69,6 +73,7 @@ const TableRow = () => {
             <td className="whitespace-nowrap px-6 py-4">{address}</td>
             <td className="whitespace-nowrap px-6 py-4">{email}</td>
             <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
+            <td className="whitespace-nowrap px-6 py-4">{position}</td>
             <td className="whitespace-nowrap py-4">{button}</td>
           </tr>
         );
@@ -114,7 +119,7 @@ const Karyawan = () => {
       address: alamat,
       email: email,
       handphone: handphone,
-      positionId: position,
+      position: position,
     };
 
     const data = axios({
@@ -244,16 +249,17 @@ const Karyawan = () => {
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               onChange={(e) => setPosition(e.target.value)}
                               defaultValue=""
+                              required
                             >
                               <option value="" disabled>
                                 Pilih Posisi
                               </option>
                               {positionList.map((jabatan, i) => {
-                                const { positionId, position } = jabatan;
+                                const { position } = jabatan;
                                 return (
                                   <option
                                     key={i}
-                                    value={positionId}
+                                    value={position}
                                     className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                                   >
                                     {position}

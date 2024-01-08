@@ -2,7 +2,6 @@ const { Sequelize } = require("sequelize");
 const { DataTypes } = Sequelize;
 const db = require("../config/config");
 const { v4: uuidv4 } = require("uuid");
-const position = require("./positionModel");
 
 const karyawan = db.define("karyawan", {
   karyawanId: {
@@ -31,8 +30,8 @@ const karyawan = db.define("karyawan", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  positionId: {
-    type: DataTypes.UUID,
+  position: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });
@@ -40,8 +39,5 @@ const karyawan = db.define("karyawan", {
 karyawan.beforeCreate((admin) => {
   admin.adminId = `${uuidv4()}`;
 });
-
-position.hasMany(karyawan, { onDelete: "cascade" });
-karyawan.belongsTo(position, { foreignKey: "positionId" });
 
 module.exports = karyawan;

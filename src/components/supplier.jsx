@@ -1,4 +1,5 @@
-import React, { useState, Fragment } from "react";
+import axios from "axios";
+import React, { useState, useEffect, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   HiOutlinePencil,
@@ -32,22 +33,43 @@ const TableHeader = () => (
   </thead>
 );
 
-const TableRow = ({ number, nama, alamat, email, handphone, handle }) => {
-  const isEvenRow = number % 2 === 0;
+const TableRow = () => {
+  const [karyawanList, setKaryawanList] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "http://localhost:8000/karyawan",
+    }).then((result) => setKaryawanList(result.data.data));
+  }, []);
 
   return (
-    <tr
-      className={`border-b dark:border-neutral-500 ${
-        isEvenRow ? "bg-gray-100" : "bg-white"
-      }`}
-    >
-      <td className="whitespace-nowrap px-6 py-4 font-medium">{number}</td>
-      <td className="whitespace-nowrap px-6 py-4">{nama}</td>
-      <td className="whitespace-nowrap px-6 py-4">{alamat}</td>
-      <td className="whitespace-nowrap px-6 py-4">{email}</td>
-      <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
-      <td className="whitespace-nowrap  py-4">{handle}</td>
-    </tr>
+    <>
+      {karyawanList.map((karyawan, i) => {
+        const { karyawanId, nip, name, address, email, handphone, position } =
+          karyawan;
+        return (
+          <tr
+            key={i}
+            className={`border-b dark:border-neutral-500 ${
+              i % 2 === 0 ? "bg-gray-100" : "bg-white"
+            }`}
+          >
+            <td className="whitespace-nowrap px-6 py-4 font-medium">{i + 1}</td>
+            <td className="whitespace-nowrap px-6 py-4" hidden>
+              {karyawanId}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4">{nip}</td>
+            <td className="whitespace-nowrap px-6 py-4">{name}</td>
+            <td className="whitespace-nowrap px-6 py-4">{address}</td>
+            <td className="whitespace-nowrap px-6 py-4">{email}</td>
+            <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
+            <td className="whitespace-nowrap px-6 py-4">{position}</td>
+            <td className="whitespace-nowrap py-4">{button}</td>
+          </tr>
+        );
+      })}
+    </>
   );
 };
 
