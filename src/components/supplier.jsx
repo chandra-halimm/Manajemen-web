@@ -14,6 +14,9 @@ const TableHeader = () => (
       <th scope="col" className="px-6 py-4">
         No.
       </th>
+      <th scope="col" className="px-6 py-4" hidden>
+        Supplier ID
+      </th>
       <th scope="col" className="px-6 py-4">
         Nama Supplier
       </th>
@@ -34,20 +37,19 @@ const TableHeader = () => (
 );
 
 const TableRow = () => {
-  const [karyawanList, setKaryawanList] = useState([]);
+  const [supplierList, setSupplierList] = useState([]);
 
   useEffect(() => {
     axios({
       method: "GET",
-      url: "http://localhost:8000/karyawan",
-    }).then((result) => setKaryawanList(result.data.data));
+      url: "http://localhost:8000/supplier",
+    }).then((result) => setSupplierList(result.data.data));
   }, []);
 
   return (
     <>
-      {karyawanList.map((karyawan, i) => {
-        const { karyawanId, nip, name, address, email, handphone, position } =
-          karyawan;
+      {supplierList.map((karyawan, i) => {
+        const { supplierId, namaSupplier, alamat, email, handphone } = karyawan;
         return (
           <tr
             key={i}
@@ -57,14 +59,12 @@ const TableRow = () => {
           >
             <td className="whitespace-nowrap px-6 py-4 font-medium">{i + 1}</td>
             <td className="whitespace-nowrap px-6 py-4" hidden>
-              {karyawanId}
+              {supplierId}
             </td>
-            <td className="whitespace-nowrap px-6 py-4">{nip}</td>
-            <td className="whitespace-nowrap px-6 py-4">{name}</td>
-            <td className="whitespace-nowrap px-6 py-4">{address}</td>
+            <td className="whitespace-nowrap px-6 py-4">{namaSupplier}</td>
+            <td className="whitespace-nowrap px-6 py-4">{alamat}</td>
             <td className="whitespace-nowrap px-6 py-4">{email}</td>
             <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
-            <td className="whitespace-nowrap px-6 py-4">{position}</td>
             <td className="whitespace-nowrap py-4">{button}</td>
           </tr>
         );
@@ -196,22 +196,7 @@ const Supplier = () => {
             <table className="min-w-full text-left text-sm font-light bg-white">
               <TableHeader />
               <tbody>
-                <TableRow
-                  number={1}
-                  nama="Larry"
-                  alamat="Kota Baru"
-                  email="admin@gmail.com"
-                  handphone="123122312"
-                  handle={button}
-                />
-                <TableRow
-                  number={2}
-                  nama="Larry"
-                  alamat="Kota Baru"
-                  email="admin@gmail.com"
-                  handphone="123122312"
-                  handle={button}
-                />
+                <TableRow />
               </tbody>
             </table>
           </div>

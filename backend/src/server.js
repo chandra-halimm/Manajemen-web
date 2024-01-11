@@ -9,6 +9,7 @@ const adminRoute = require("./routes/AdminRoute");
 const authRoute = require("./routes/authRoute");
 const karyawanRoute = require("./routes/karyawanRoute");
 const positionRoute = require("./routes/positionRoute");
+const supplierRoute = require("./routes/supplierRoute");
 
 // migrate DB
 // const db = require("./config/config");
@@ -22,6 +23,7 @@ try {
   app.use(authRoute);
   app.use(karyawanRoute);
   app.use(positionRoute);
+  app.use(supplierRoute);
 } catch (error) {
   console.error(error);
 }
