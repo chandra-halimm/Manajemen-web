@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   HiOutlinePencil,
@@ -6,6 +6,7 @@ import {
   HiOutlinePrinter,
   HiOutlineFolderRemove,
 } from "react-icons/hi";
+import axios from "axios";
 
 const TableHeader = () => (
   <thead className="border-b font-medium text-white bg-sky-500 ">
@@ -23,27 +24,48 @@ const TableHeader = () => (
         Harga
       </th>
       <th scope="col" className="px-6 py-4">
+        Stock
+      </th>
+      <th scope="col" className="px-6 py-4">
         Action
       </th>
     </tr>
   </thead>
 );
 
-const TableRow = ({ number, kodeBarang, namaBarang, harga, handle }) => {
+const TableRow = ({ number }) => {
+  const [barang, setBarang] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "http://localhost:8000/barang",
+    }).then((result) => setBarang(result.data.data));
+  }, []);
+
   const isEvenRow = number % 2 === 0;
 
   return (
-    <tr
-      className={`border-b dark:border-neutral-500 ${
-        isEvenRow ? "bg-gray-100" : "bg-white"
-      }`}
-    >
-      <td className="whitespace-nowrap px-6 py-4 font-medium">{number}</td>
-      <td className="whitespace-nowrap px-6 py-4">{kodeBarang}</td>
-      <td className="whitespace-nowrap px-6 py-4">{namaBarang}</td>
-      <td className="whitespace-nowrap px-6 py-4">{harga}</td>
-      <td className="whitespace-nowrap px-6 py-4">{handle}</td>
-    </tr>
+    <>
+      {barang.map((barang, i) => {
+        const { kodeBarang, namaBarang, harga, stock } = barang;
+        return (
+          <tr
+            key={i}
+            className={`border-b dark:border-neutral-500 ${
+              isEvenRow ? "bg-gray-100" : "bg-white"
+            }`}
+          >
+            <td className="whitespace-nowrap px-6 py-4 font-medium">{i + 1}</td>
+            <td className="whitespace-nowrap px-6 py-4">{kodeBarang}</td>
+            <td className="whitespace-nowrap px-6 py-4">{namaBarang}</td>
+            <td className="whitespace-nowrap px-6 py-4">{harga}</td>
+            <td className="whitespace-nowrap px-6 py-4">{stock}</td>
+            <td className="whitespace-nowrap px-6 py-4">{button}</td>
+          </tr>
+        );
+      })}
+    </>
   );
 };
 
@@ -167,20 +189,7 @@ const Pembelian = () => {
             <table className="min-w-full text-left text-sm font-light bg-white">
               <TableHeader />
               <tbody>
-                <TableRow
-                  number={1}
-                  kodeBarang="By12311"
-                  namaBarang="Platinum"
-                  harga="12311"
-                  handle={button}
-                />
-                <TableRow
-                  number={2}
-                  kodeBarang="By12311"
-                  namaBarang="Platinum"
-                  harga="12311"
-                  handle={button}
-                />
+                <TableRow />
               </tbody>
             </table>
           </div>

@@ -10,6 +10,7 @@ const authRoute = require("./routes/authRoute");
 const karyawanRoute = require("./routes/karyawanRoute");
 const positionRoute = require("./routes/positionRoute");
 const supplierRoute = require("./routes/supplierRoute");
+const barangRoute = require("./routes/barangRoute");
 
 // migrate DB
 // const db = require("./config/config");
@@ -24,6 +25,7 @@ try {
   app.use(karyawanRoute);
   app.use(positionRoute);
   app.use(supplierRoute);
+  app.use(barangRoute);
 } catch (error) {
   console.error(error);
 }
