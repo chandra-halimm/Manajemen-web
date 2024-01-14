@@ -39,7 +39,7 @@ const createBarang = async (req, res) => {
           });
           return check;
         } catch (error) {
-          throw error;
+          handle500(req, res, error);
         }
       };
 

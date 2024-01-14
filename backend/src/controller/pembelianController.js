@@ -1,5 +1,6 @@
-const Karyawan = require("../models/karyawanModels");
-require("sequelize");
+const Pembelian = require("../models/pembelianModel");
+const Barang = require("../models/barangModels");
+const Sequelize = require("sequelize");
 const {
   handle200,
   handle201,
@@ -7,8 +8,8 @@ const {
   handle500,
 } = require("../utils/response");
 
-const getKaryawan = async (req, res) => {
-  const data = await Karyawan.findAll();
+const getPembelian = async (req, res) => {
+  const data = await Pembelian.findAll();
 
   try {
     const isData = data
@@ -21,33 +22,35 @@ const getKaryawan = async (req, res) => {
   }
 };
 
-const createKaryawan = async (req, res) => {
+const createPembelian = async (req, res) => {
   try {
-    const { nip, name, address, email, handphone, position } = req.body;
+    const { namaSupplier, namaBarang, harga, stock } = req.body;
 
-    const data = await Karyawan.create({
-      nip,
-      name,
-      address,
-      email,
-      handphone,
-      position,
+    await Pembelian.create({
+      namaSupplier,
+      namaBarang,
+      harga,
+      stock,
     });
+    const updatedBarang = await Barang.update(
+      { stock: Sequelize.literal(`stock + ${stock}`) },
+      { where: { namaBarang } }
+    );
 
-    const isData = data
-      ? handle201(req, res, data, "karyawan")
-      : handle400(req, res, "fail get karyawan data");
+    const isUpdate = updatedBarang
+      ? handle201(req, res, updatedBarang, "karyawan")
+      : handle400(req, res, "fail to update karyawan data");
 
-    return isData;
+    return isUpdate;
   } catch (error) {
     handle500(req, res, error);
   }
 };
 
-const editKaryawan = async (req, res) => {
+const editPembelian = async (req, res) => {
   try {
     const { nip, name, address, email, handphone, position } = req.body;
-    const data = await Karyawan.update(
+    const data = await Pembelian.update(
       {
         nip,
         name,
@@ -72,15 +75,15 @@ const editKaryawan = async (req, res) => {
   }
 };
 
-const deleteKaryawan = async (req, res) => {
+const deletePembelian = async (req, res) => {
   try {
     const { karyawanId } = req.params;
-    const data = await Karyawan.findOne({
+    const data = await Pembelian.findOne({
       where: { karyawanId: karyawanId },
     });
 
     if (data) {
-      await Karyawan.destroy({
+      await Pembelian.destroy({
         where: { karyawanId },
       });
       handle200(req, res, data, "delete");
@@ -92,4 +95,9 @@ const deleteKaryawan = async (req, res) => {
   }
 };
 
-module.exports = { getKaryawan, createKaryawan, editKaryawan, deleteKaryawan };
+module.exports = {
+  getPembelian,
+  createPembelian,
+  editPembelian,
+  deletePembelian,
+};
