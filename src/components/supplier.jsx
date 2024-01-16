@@ -85,6 +85,28 @@ const button = (
 );
 
 const Supplier = () => {
+  const [namaSupplier, setNamaSupplier] = useState("");
+  const [alamat, setAlamat] = useState("");
+  const [email, setEmail] = useState("");
+  const [handphone, setHandphone] = useState("");
+
+  const addSupplier = () => {
+    const requestingData = {
+      namaSupplier: namaSupplier,
+      alamat: alamat,
+      email: email,
+      handphone: handphone,
+    };
+    axios({
+      method: "POST",
+      url: "http://localhost:8000/supplier",
+      data: requestingData,
+    }).then(() => {
+      alert("add supplier success");
+      window.location.reload();
+    });
+  };
+
   const [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -146,19 +168,22 @@ const Supplier = () => {
                         </Dialog.Title>
                         <div className="mt-4">
                           <form className="flex flex-col gap-2">
-                            <label htmlFor="nama">Nama Supplier</label>
+                            <label htmlFor="alamat">Nama Supplier </label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="text"
-                              placeholder="input nama supplier"
-                              id="nama"
+                              placeholder="input alamat"
+                              id="alamat"
+                              onChange={(e) => setNamaSupplier(e.target.value)}
                             />
+
                             <label htmlFor="alamat">Alamat </label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
                               type="text"
                               placeholder="input alamat"
                               id="alamat"
+                              onChange={(e) => setAlamat(e.target.value)}
                             />
                             <label htmlFor="email">Email </label>
                             <input
@@ -166,6 +191,7 @@ const Supplier = () => {
                               type="email"
                               placeholder="input alamat"
                               id="email"
+                              onChange={(e) => setEmail(e.target.value)}
                             />
                             <label htmlFor="number">Handphone </label>
                             <input
@@ -173,6 +199,7 @@ const Supplier = () => {
                               type="number"
                               placeholder="input alamat"
                               id="number"
+                              onChange={(e) => setHandphone(e.target.value)}
                             />
                           </form>
                         </div>
@@ -181,7 +208,7 @@ const Supplier = () => {
                           <button
                             type="button"
                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={closeModal}
+                            onClick={() => addSupplier()}
                           >
                             Submit
                           </button>

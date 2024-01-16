@@ -24,16 +24,16 @@ const getPembelian = async (req, res) => {
 
 const createPembelian = async (req, res) => {
   try {
-    const { namaSupplier, namaBarang, harga, stock } = req.body;
+    const { namaSupplier, namaBarang, harga, qty } = req.body;
 
     await Pembelian.create({
       namaSupplier,
       namaBarang,
       harga,
-      stock,
+      qty,
     });
     const updatedBarang = await Barang.update(
-      { stock: Sequelize.literal(`stock + ${stock}`) },
+      { stock: Sequelize.literal(`stock + ${qty}`) },
       { where: { namaBarang } }
     );
 

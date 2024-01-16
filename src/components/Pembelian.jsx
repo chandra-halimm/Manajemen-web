@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
   HiOutlinePencil,
@@ -6,24 +6,28 @@ import {
   HiOutlinePlus,
   HiOutlinePrinter,
 } from "react-icons/hi";
+import axios from "axios";
 
 const TableHeader = () => (
   <thead className="border-b font-medium text-white bg-sky-500 ">
     <tr>
+      <th scope="col" className="px-6 py-4" hidden>
+        Pembelian ID
+      </th>
       <th scope="col" className="px-6 py-4">
         No.
       </th>
       <th scope="col" className="px-6 py-4">
-        Nama Barang
+        Nama Supplier
       </th>
       <th scope="col" className="px-6 py-4">
         Nama Barang
       </th>
       <th scope="col" className="px-6 py-4">
-        Email
+        harga
       </th>
       <th scope="col" className="px-6 py-4">
-        Handphone
+        stock
       </th>
       <th scope="col" className="px-6 py-4">
         Action
@@ -32,22 +36,41 @@ const TableHeader = () => (
   </thead>
 );
 
-const TableRow = ({ number, nama, alamat, email, handphone, handle }) => {
-  const isEvenRow = number % 2 === 0;
+const TableRow = () => {
+  const [pembelianList, setPembelianList] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "http://localhost:8000/pembelian",
+    }).then((result) => setPembelianList(result.data.data));
+  }, []);
 
   return (
-    <tr
-      className={`border-b dark:border-neutral-500 ${
-        isEvenRow ? "bg-gray-100" : "bg-white"
-      }`}
-    >
-      <td className="whitespace-nowrap px-6 py-4 font-medium">{number}</td>
-      <td className="whitespace-nowrap px-6 py-4">{nama}</td>
-      <td className="whitespace-nowrap px-6 py-4">{alamat}</td>
-      <td className="whitespace-nowrap px-6 py-4">{email}</td>
-      <td className="whitespace-nowrap px-6 py-4">{handphone}</td>
-      <td className="whitespace-nowrap  py-4">{handle}</td>
-    </tr>
+    <>
+      {pembelianList.map((pembelian, i) => {
+        const isEvenRow = i % 2 === 0;
+        const { pembelianId, namaSupplier, namaBarang, harga, qty } = pembelian;
+        return (
+          <tr
+            key={i}
+            className={`border-b dark:border-neutral-500 ${
+              isEvenRow ? "bg-gray-100" : "bg-white"
+            }`}
+          >
+            <td hidden className="whitespace-nowrap px-6 py-4 font-medium">
+              {pembelianId}
+            </td>
+            <td className="whitespace-nowrap px-6 py-4 font-medium">{i + 1}</td>
+            <td className="whitespace-nowrap px-6 py-4">{namaSupplier}</td>
+            <td className="whitespace-nowrap px-6 py-4">{namaBarang}</td>
+            <td className="whitespace-nowrap px-6 py-4">{harga}</td>
+            <td className="whitespace-nowrap px-6 py-4">{qty}</td>
+            <td className="whitespace-nowrap  py-4">{button}</td>
+          </tr>
+        );
+      })}
+    </>
   );
 };
 
@@ -64,6 +87,45 @@ const button = (
 
 const Pembelian = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const [barangList, setBarangList] = useState([]);
+  const [supplierList, setSupplierList] = useState([]);
+  const [namaSupplier, setNamaSupplier] = useState("");
+  const [namaBarang, setNamaBarang] = useState("");
+  const [harga, setHarga] = useState("");
+  const [qty, setQty] = useState("");
+
+  const addPembelian = () => {
+    const requestingData = {
+      namaSupplier: namaSupplier,
+      namaBarang: namaBarang,
+      harga: harga,
+      qty: qty,
+    };
+
+    axios({
+      method: "POST",
+      url: "http://localhost:8000/pembelian",
+      data: requestingData,
+    }).then(() => {
+      alert("add pembelian success");
+      window.location.reload();
+    });
+  };
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "http://localhost:8000/barang",
+    }).then((result) => setBarangList(result.data.data));
+  }, []);
+
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "http://localhost:8000/supplier",
+    }).then((result) => setSupplierList(result.data.data));
+  }, []);
 
   function closeModal() {
     setIsOpen(false);
@@ -125,33 +187,69 @@ const Pembelian = () => {
                         </Dialog.Title>
                         <div className="mt-4">
                           <form className="flex flex-col gap-2">
-                            <label htmlFor="nama">Nama Supplier</label>
+                            <label htmlFor="supplier">Nama Supplier </label>
+                            <select
+                              id="supplier"
+                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                              onChange={(e) => setNamaSupplier(e.target.value)}
+                              defaultValue=""
+                              required
+                            >
+                              <option value="" disabled>
+                                Pilih Posisi
+                              </option>
+                              {supplierList.map((jabatan, i) => {
+                                const { namaSupplier } = jabatan;
+                                return (
+                                  <option
+                                    key={i}
+                                    value={namaSupplier}
+                                    className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                                  >
+                                    {namaSupplier}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <label htmlFor="supplier">Nama Barang </label>
+                            <select
+                              id="supplier"
+                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                              onChange={(e) => setNamaBarang(e.target.value)}
+                              defaultValue=""
+                              required
+                            >
+                              <option value="" disabled>
+                                Pilih Posisi
+                              </option>
+                              {barangList.map((jabatan, i) => {
+                                const { namaBarang } = jabatan;
+                                return (
+                                  <option
+                                    key={i}
+                                    value={namaBarang}
+                                    className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                                  >
+                                    {namaBarang}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <label htmlFor="harga">harga </label>
                             <input
                               className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
-                              type="text"
-                              placeholder="input nama supplier"
-                              id="nama"
-                            />
-                            <label htmlFor="alamat">Alamat </label>
-                            <input
-                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
-                              type="text"
-                              placeholder="input alamat"
-                              id="alamat"
-                            />
-                            <label htmlFor="email">Email </label>
-                            <input
-                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
-                              type="email"
-                              placeholder="input alamat"
-                              id="email"
-                            />
-                            <label htmlFor="number">Handphone </label>
-                            <input
-                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
-                              type="number"
-                              placeholder="input alamat"
+                              type="harga"
+                              placeholder="input harga"
                               id="number"
+                              onChange={(e) => setHarga(e.target.value)}
+                            />
+                            <label htmlFor="number">Stock </label>
+                            <input
+                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                              type="qty"
+                              placeholder="input qty"
+                              id="qty"
+                              onChange={(e) => setQty(e.target.value)}
                             />
                           </form>
                         </div>
@@ -160,7 +258,7 @@ const Pembelian = () => {
                           <button
                             type="button"
                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={closeModal}
+                            onClick={() => addPembelian()}
                           >
                             Submit
                           </button>
@@ -175,22 +273,7 @@ const Pembelian = () => {
             <table className="min-w-full text-left text-sm font-light bg-white">
               <TableHeader />
               <tbody>
-                <TableRow
-                  number={1}
-                  nama="Larry"
-                  alamat="Kota Baru"
-                  email="admin@gmail.com"
-                  handphone="123122312"
-                  handle={button}
-                />
-                <TableRow
-                  number={2}
-                  nama="Larry"
-                  alamat="Kota Baru"
-                  email="admin@gmail.com"
-                  handphone="123122312"
-                  handle={button}
-                />
+                <TableRow />
               </tbody>
             </table>
           </div>

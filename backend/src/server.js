@@ -11,7 +11,7 @@ const karyawanRoute = require("./routes/karyawanRoute");
 const positionRoute = require("./routes/positionRoute");
 const supplierRoute = require("./routes/supplierRoute");
 const barangRoute = require("./routes/barangRoute");
-// const pembelianRoute = require("./routes/pembelianRoute");
+const pembelianRoute = require("./routes/pembelianRoute");
 
 // migrate DB
 // const db = require("./config/config");
@@ -27,7 +27,7 @@ try {
   app.use(positionRoute);
   app.use(supplierRoute);
   app.use(barangRoute);
-  // app.use(pembelianRoute);
+  app.use(pembelianRoute);
 } catch (error) {
   console.error(error);
 }

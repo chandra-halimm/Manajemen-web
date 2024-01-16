@@ -6,6 +6,7 @@ import {
   HiOutlineTrash,
   HiOutlinePlus,
   HiOutlinePrinter,
+  HiUserGroup,
 } from "react-icons/hi";
 
 const TableHeader = () => (
@@ -95,6 +96,7 @@ const button = (
 
 const Karyawan = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenPosition, setIsOpenPosition] = useState(false);
 
   function closeModal() {
     setIsOpen(false);
@@ -102,6 +104,14 @@ const Karyawan = () => {
 
   function openModal() {
     setIsOpen(true);
+  }
+
+  function closeModalPosition() {
+    setIsOpenPosition(false);
+  }
+
+  function openModalPosition() {
+    setIsOpenPosition(true);
   }
 
   const [positionList, setPositionList] = useState([]);
@@ -136,6 +146,21 @@ const Karyawan = () => {
     }
   };
 
+  const addPosition = () => {
+    const requestingData = {
+      position: position,
+    };
+
+    axios({
+      method: "POST",
+      url: "http://localhost:8000/position",
+      data: requestingData,
+    }).then(() => {
+      alert("success add position");
+      window.location.reload();
+    });
+  };
+
   useEffect(() => {
     axios({
       method: "GET",
@@ -157,6 +182,12 @@ const Karyawan = () => {
               </button>
               <button className="px-6 py-2 bg-sky-500 rounded-md text-white mb-3 hover:bg-sky-700 duration-300">
                 <HiOutlinePrinter fontSize={20} />
+              </button>
+              <button
+                onClick={openModalPosition}
+                className="px-6 py-2 bg-sky-500 rounded-md text-white mb-3 hover:bg-sky-700 duration-300"
+              >
+                <HiUserGroup fontSize={20} />
               </button>
             </div>
 
@@ -276,6 +307,76 @@ const Karyawan = () => {
                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={() => {
                               handleSubmit();
+                            }}
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
+
+            <Transition appear show={isOpenPosition} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={closeModalPosition}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-black/25" />
+                </Transition.Child>
+
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 scale-95"
+                      enterTo="opacity-100 scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 scale-100"
+                      leaveTo="opacity-0 scale-95"
+                    >
+                      <Dialog.Panel className="w-9/12  max-w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-lg font-medium leading-6 text-gray-900"
+                        >
+                          INPUT JABATAN
+                        </Dialog.Title>
+                        <div className="mt-4">
+                          <form className="flex flex-col gap-2">
+                            <label htmlFor="nip" value={""}>
+                              Position
+                            </label>
+                            <input
+                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                              type="text"
+                              placeholder="input position"
+                              onChange={(e) => setPosition(e.target.value)}
+                              id="nip"
+                              required
+                            />
+                          </form>
+                        </div>
+
+                        <div className="mt-4">
+                          <button
+                            type="button"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            onClick={() => {
+                              addPosition();
                             }}
                           >
                             Submit

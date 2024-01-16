@@ -26,7 +26,7 @@ const Pembelian = db.define("pembelian", {
     allowNull: false,
   },
 
-  stock: {
+  qty: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },

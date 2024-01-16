@@ -81,6 +81,29 @@ const button = (
 );
 
 const Pembelian = () => {
+  const [kodeBarang, setKodeBarang] = useState("");
+  const [namaBarang, setNamaBarang] = useState("");
+  const [harga, setHarga] = useState("");
+  const [stock, setStock] = useState("");
+
+  const addStock = () => {
+    const requestingData = {
+      kodeBarang: kodeBarang,
+      namaBarang: namaBarang,
+      harga: harga,
+      stock: stock,
+    };
+
+    axios({
+      method: "POST",
+      url: "http://localhost:8000/barang",
+      data: requestingData,
+    }).then(() => {
+      alert("add barang success");
+      window.location.reload();
+    });
+  };
+
   const [openinventory, setOpenInventory] = useState(false);
 
   function closeModalInventory() {
@@ -152,6 +175,7 @@ const Pembelian = () => {
                               type="text"
                               placeholder="input nama Barang"
                               id="nama"
+                              onChange={(e) => setKodeBarang(e.target.value)}
                             />
                             <label htmlFor="nama">Nama Barang</label>
                             <input
@@ -159,6 +183,7 @@ const Pembelian = () => {
                               type="text"
                               placeholder="input nama Barang"
                               id="nama"
+                              onChange={(e) => setNamaBarang(e.target.value)}
                             />
                             <label htmlFor="nama">Harga</label>
                             <input
@@ -166,6 +191,15 @@ const Pembelian = () => {
                               type="text"
                               placeholder="input nama Barang"
                               id="nama"
+                              onChange={(e) => setHarga(e.target.value)}
+                            />
+                            <label htmlFor="nama">Stock</label>
+                            <input
+                              className="border-2 border-gray-300 py-2 px-2 rounded-md text-sm focus:outline-none active:outline-none focus:border-sky-500 focus:border-3"
+                              type="number"
+                              placeholder="input stock"
+                              id="nama"
+                              onChange={(e) => setStock(e.target.value)}
                             />
                           </form>
                         </div>
@@ -174,7 +208,7 @@ const Pembelian = () => {
                           <button
                             type="button"
                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={closeModalInventory}
+                            onClick={() => addStock()}
                           >
                             Submit
                           </button>
