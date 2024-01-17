@@ -104,12 +104,11 @@ export default function DashboardGrid() {
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="harga" /> {/* Specify the data key here */}
+          <XAxis dataKey="harga" />
           <YAxis />
           <Tooltip />
           <Legend />
           <Bar dataKey="harga" fill="#8884d8" />{" "}
-          {/* Specify the data key here */}
         </BarChart>
       )}
     </section>

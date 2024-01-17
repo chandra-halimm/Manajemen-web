@@ -13,7 +13,7 @@ const supplierRoute = require("./routes/supplierRoute");
 const barangRoute = require("./routes/barangRoute");
 const pembelianRoute = require("./routes/pembelianRoute");
 
-// migrate DB
+// // migrate DB
 // const db = require("./config/config");
 // db.sync();
 
