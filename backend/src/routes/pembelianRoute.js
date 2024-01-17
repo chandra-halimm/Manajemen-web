@@ -6,9 +6,11 @@ const {
   editPembelian,
   deletePembelian,
   getCashPembelian,
+  chartPembelian,
 } = require("../controller/pembelianController");
 
 router.get("/pembelian", getPembelian);
+router.get("/pembelian/chart", chartPembelian);
 router.get("/pembelian/count", getCashPembelian);
 router.delete("/pembelian/:pembelianId", deletePembelian);
 router.put("/pembelian", editPembelian);

@@ -1,11 +1,21 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 export default function DashboardGrid() {
   const [karyawanCountList, setKaryawanCountList] = useState(0);
   const [supplierCountList, setSupplierCountList] = useState(0);
-  const [BarangCountList, setBarangCountList] = useState(0);
-  const [hargaCountAll, sethargaCountAll] = useState(0);
+  const [barangCountList, setBarangCountList] = useState([]);
+  const [hargaCountAll, setHargaCountAll] = useState([]);
+  const [pembelianList, setPembelianList] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,12 +23,19 @@ export default function DashboardGrid() {
         const pembelianResult = await axios.get(
           "http://localhost:8000/pembelian/count"
         );
-        sethargaCountAll(pembelianResult.data.data);
+        setHargaCountAll([
+          { name: "Pembelian", value: pembelianResult.data.data },
+        ]);
 
         const barangResult = await axios.get(
           "http://localhost:8000/barang/count"
         );
-        setBarangCountList(barangResult.data.data);
+        setBarangCountList([{ name: "Barang", value: barangResult.data.data }]);
+
+        const pembelianAllList = await axios.get(
+          "http://localhost:8000/pembelian/chart"
+        );
+        setPembelianList(pembelianAllList.data.data);
 
         const karyawanResult = await axios.get(
           "http://localhost:8000/karyawan/count"
@@ -64,7 +81,7 @@ export default function DashboardGrid() {
           <div>
             Barang{" "}
             <span className="px-3 font-semibold text-lg text-green-600">
-              {BarangCountList}
+              {barangCountList.length > 0 ? barangCountList[0].value : 0}
             </span>
           </div>
         </BoxWrapper>
@@ -72,11 +89,29 @@ export default function DashboardGrid() {
           <div>
             Jumlah Pembelian
             <span className="px-3 font-semibold text-lg text-green-600">
-              {"Rp" + hargaCountAll}
+              {"Rp" + (hargaCountAll.length > 0 ? hargaCountAll[0].value : 0)}
             </span>
           </div>
         </BoxWrapper>
       </div>
+
+      {pembelianList.length > 0 && (
+        <BarChart
+          className="mt-10"
+          width={600}
+          height={400}
+          data={pembelianList}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="harga" /> {/* Specify the data key here */}
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="harga" fill="#8884d8" />{" "}
+          {/* Specify the data key here */}
+        </BarChart>
+      )}
     </section>
   );
 }
