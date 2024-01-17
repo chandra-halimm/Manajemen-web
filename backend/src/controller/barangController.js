@@ -22,6 +22,20 @@ const getBarang = async (req, res) => {
   }
 };
 
+const getCountBarang = async (req, res) => {
+  const data = await Barang.count();
+
+  try {
+    const isData = data
+      ? handle200(req, res, data, "all")
+      : handle400(req, res, "invalid paramaters");
+
+    return isData;
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
 const createBarang = async (req, res) => {
   try {
     const { kodeBarang, namaBarang, harga, stock } = req.body;
@@ -67,4 +81,4 @@ const createBarang = async (req, res) => {
   }
 };
 
-module.exports = { getBarang, createBarang };
+module.exports = { getBarang, createBarang, getCountBarang };

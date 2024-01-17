@@ -18,6 +18,18 @@ const getSupplier = async (req, res) => {
   }
 };
 
+const getCountSupplier = async (req, res) => {
+  try {
+    const data = await SupplierModel.count();
+    const isData = data
+      ? handle200(req, res, data, "position")
+      : handle400(req, res, "invalid parameters");
+    return isData;
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
 const createSupplier = async (req, res) => {
   try {
     const { namaSupplier, alamat, email, handphone } = req.body;
@@ -42,4 +54,4 @@ const createSupplier = async (req, res) => {
   }
 };
 
-module.exports = { getSupplier, createSupplier };
+module.exports = { getSupplier, createSupplier, getCountSupplier };

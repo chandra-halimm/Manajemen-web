@@ -28,13 +28,8 @@ export const DASHBOARD_SIDEBAR_LINK = [
 
 export const DASHBOARD_BOTTOM_LINK = [
   {
-    key: "dashboard",
-    label: "Dashboard",
-    path: "/",
-  },
-  {
-    key: "product",
-    label: "Product",
-    path: "/product",
+    key: "logout",
+    label: "Logout",
+    path: "/logout",
   },
 ];

@@ -22,6 +22,20 @@ const getPembelian = async (req, res) => {
   }
 };
 
+const getCashPembelian = async (req, res) => {
+  const data = await Pembelian.sum("harga");
+
+  try {
+    const isData = data
+      ? handle200(req, res, data, "all")
+      : handle400(req, res, "invalid paramaters");
+
+    return isData;
+  } catch (error) {
+    handle500(req, res, error);
+  }
+};
+
 const createPembelian = async (req, res) => {
   try {
     const { namaSupplier, namaBarang, harga, qty } = req.body;
@@ -100,4 +114,5 @@ module.exports = {
   createPembelian,
   editPembelian,
   deletePembelian,
+  getCashPembelian,
 };

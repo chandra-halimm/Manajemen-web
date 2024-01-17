@@ -21,6 +21,16 @@ const getKaryawan = async (req, res) => {
   }
 };
 
+const getCountKaryawan = async (req, res) => {
+  try {
+    const count = await Karyawan.count();
+
+    return handle200(req, res, count, "count");
+  } catch (error) {
+    return handle500(req, res, error);
+  }
+};
+
 const createKaryawan = async (req, res) => {
   try {
     const { nip, name, address, email, handphone, position } = req.body;
@@ -92,4 +102,10 @@ const deleteKaryawan = async (req, res) => {
   }
 };
 
-module.exports = { getKaryawan, createKaryawan, editKaryawan, deleteKaryawan };
+module.exports = {
+  getKaryawan,
+  createKaryawan,
+  editKaryawan,
+  getCountKaryawan,
+  deleteKaryawan,
+};
